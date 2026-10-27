@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         String   @default("USTADZ")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  setoran  HafalanSetoran[]
+  presensi Presensi[]
+  anak     Santri?          @relation("WaliSantri")
+}
+
+model Santri {
+  id        Int      @id @default(autoincrement())
+  nis       String   @unique
+  name      String
+  gender    String   @default("L")
+  kelas     String
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  // Satu akun wali hanya terhubung ke satu murid.
+  waliId Int?  @unique
+  wali   User? @relation("WaliSantri", fields: [waliId], references: [id], onDelete: SetNull)
+
+  setoran  HafalanSetoran[]
+  presensi Presensi[]
+
+  @@index([name])
+}
+
+model HafalanSetoran {
+  id        Int      @id @default(autoincrement())
+  santriId  Int
+  pengujiId Int
+  date      String
+  type      String   @default("ZIYADAH")
+  materi    String
+  status    String   @default("LULUS")
+  predikat  String   @default("JAYYID")
+  catatan   String?
+  createdAt DateTime @default(now())
+
+  santri  Santri @relation(fields: [santriId], references: [id], onDelete: Cascade)
+  penguji User   @relation(fields: [pengujiId], references: [id])
+
+  @@index([date])
+  @@index([santriId])
+  @@index([pengujiId])
+}
+
+model Kegiatan {
+  id        Int     @id @default(autoincrement())
+  name      String
+  category  String  @default("HARIAN")
+  startTime String?
+  endTime   String?
+  active    Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  presensi Presensi[]
+}
+
+model Presensi {
+  id           Int      @id @default(autoincrement())
+  santriId     Int
+  kegiatanId   Int
+  date         String
+  status       String   @default("HADIR")
+  note         String?
+  recordedById Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  santri     Santri    @relation(fields: [santriId], references: [id], onDelete: Cascade)
+  kegiatan   Kegiatan  @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+  recordedBy User?     @relation(fields: [recordedById], references: [id])
+
+  @@unique([santriId, kegiatanId, date])
+  @@index([date])
+  @@index([kegiatanId])
+  @@index([recordedById])
+}
+
+model Setting {
+  key   String @id
+  value String
+}

@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-paper-100 text-ink-800 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500/30 ring-offset-1 ring-offset-paper-100;
+  }
+
+  /* Angka pada tabel dan statistik harus berbaris rapi seperti di buku induk. */
+  table,
+  input[type="date"],
+  input[type="time"],
+  input[type="number"] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * Latar halaman aplikasi. Sangat tipis karena di atasnya ada tabel dan
+   * kartu putih yang harus tetap jadi fokus.
+   */
+  .bg-app {
+    background-color: #f4f8f6;
+    background-image: linear-gradient(172deg, #fbfaf6 0%, #f2f7f5 55%, #e6f1ed 100%);
+  }
+
+  /* Bar atas memakai warna puncak gradasi agar menyatu saat halaman digulir. */
+  .bg-topbar {
+    background-color: #fbfaf6;
+  }
+
+  /*
+   * Sidebar dibuat lebih hijau daripada isi halaman supaya terbaca sebagai
+   * panel tersendiri, memakai rona mint dan teal dari logo.
+   */
+  .bg-sidebar {
+    background-image: linear-gradient(180deg, #eaf5f1 0%, #ddeee9 55%, #cfe6e0 100%);
+  }
+
+  /*
+   * Latar halaman masuk: gradasi hijau mint dari logo. Bagian atas sengaja
+   * dibiarkan nyaris putih karena logo punya unsur mint juga — kalau latarnya
+   * ikut pekat di situ, huruf "I" dan titik bukunya akan tenggelam.
+   */
+  .bg-login {
+    background-color: #e4f3ec;
+    background-image:
+      radial-gradient(52rem 36rem at 94% 106%, rgba(27, 137, 136, 0.2), transparent 64%),
+      linear-gradient(162deg, #fbfdfc 0%, #f0f9f5 26%, #dcf0e8 58%, #c1e4d8 100%);
+  }
+
+  /* Versi tinta dari anyaman bintang delapan, untuk latar terang. */
+  .bg-khatam-tinta {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23135c5b' stroke-opacity='0.16' stroke-width='1'%3E%3Crect x='16' y='16' width='32' height='32'/%3E%3Crect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/%3E%3Crect x='-16' y='-16' width='32' height='32'/%3E%3Crect x='-16' y='-16' width='32' height='32' transform='rotate(45 0 0)'/%3E%3Crect x='48' y='-16' width='32' height='32'/%3E%3Crect x='48' y='-16' width='32' height='32' transform='rotate(45 64 0)'/%3E%3Crect x='-16' y='48' width='32' height='32'/%3E%3Crect x='-16' y='48' width='32' height='32' transform='rotate(45 0 64)'/%3E%3Crect x='48' y='48' width='32' height='32'/%3E%3Crect x='48' y='48' width='32' height='32' transform='rotate(45 64 64)'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 64px 64px;
+  }
+
+  /* Anyaman bintang delapan, dipakai tipis sekali sebagai tekstur panel gelap. */
+  .bg-khatam {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.07' stroke-width='1'%3E%3Crect x='16' y='16' width='32' height='32'/%3E%3Crect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/%3E%3Crect x='-16' y='-16' width='32' height='32'/%3E%3Crect x='-16' y='-16' width='32' height='32' transform='rotate(45 0 0)'/%3E%3Crect x='48' y='-16' width='32' height='32'/%3E%3Crect x='48' y='-16' width='32' height='32' transform='rotate(45 64 0)'/%3E%3Crect x='-16' y='48' width='32' height='32'/%3E%3Crect x='-16' y='48' width='32' height='32' transform='rotate(45 0 64)'/%3E%3Crect x='48' y='48' width='32' height='32'/%3E%3Crect x='48' y='48' width='32' height='32' transform='rotate(45 64 64)'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 64px 64px;
+  }
+}
+
+/* Hormati setelan sistem bagi yang terganggu oleh gerak. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  aside,
+  header.app-bar,
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  table {
+    font-size: 11px;
+  }
+}
