@@ -108,12 +108,6 @@ export function LoginForm() {
           "Masuk"
         )}
       </button>
-
-      <p className="border-t border-ink-100 pt-4 text-[12px] leading-relaxed text-ink-500">
-        Akun bawaan <span className="font-mono text-ink-600">admin / admin123</span> dan{" "}
-        <span className="font-mono text-ink-600">ustadz / ustadz123</span>. Ganti passwordnya lewat
-        Pengaturan → Akun Saya, lalu hapus baris ini sebelum aplikasi dibagikan.
-      </p>
     </form>
   );
 }
