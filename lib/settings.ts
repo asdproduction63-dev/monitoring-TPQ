@@ -1,9 +1,10 @@
+import { cache } from "react";
 import { DEFAULT_SETTINGS, SettingKey } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 
 export type AppSettings = Record<SettingKey, string>;
 
-export async function getSettings(): Promise<AppSettings> {
+export const getSettings = cache(async (): Promise<AppSettings> => {
   const rows = await prisma.setting.findMany();
   const settings = { ...DEFAULT_SETTINGS } as AppSettings;
   for (const row of rows) {
@@ -12,4 +13,4 @@ export async function getSettings(): Promise<AppSettings> {
     }
   }
   return settings;
-}
+});

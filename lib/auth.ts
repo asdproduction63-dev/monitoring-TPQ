@@ -1,9 +1,14 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { toSessionRole, type SessionUser } from "@/lib/session-token";
 
-export async function getCurrentUser(): Promise<SessionUser | null> {
+/**
+ * Layout dan halaman sama-sama memeriksa akun. cache() membuat keduanya
+ * berbagi satu query dalam satu request, bukan dua.
+ */
+export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   const session = await getSessionUser();
   if (!session) return null;
 
@@ -20,7 +25,7 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     username: user.username,
     role: toSessionRole(user.role),
   };
-}
+});
 
 export async function requireUser(): Promise<SessionUser> {
   const user = await getCurrentUser();
