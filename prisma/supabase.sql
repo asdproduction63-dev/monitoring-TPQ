@@ -153,3 +153,47 @@ EXCEPTION
     WHEN duplicate_object THEN NULL;
 END
 $$;
+
+-- =====================================================================
+-- Tambahan: laporan wali tentang kegiatan anak di rumah.
+-- Satu catatan boleh punya banyak foto atau video. Berkas medianya
+-- sendiri disimpan di Supabase Storage, tabel ini hanya memuat jalurnya.
+-- Aman dijalankan ulang pada database yang sudah ada.
+-- =====================================================================
+
+CREATE TABLE IF NOT EXISTS "CatatanRumah" (
+    "id" SERIAL NOT NULL,
+    "santriId" INTEGER NOT NULL,
+    "penulisId" INTEGER NOT NULL,
+    "isi" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CatatanRumah_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "CatatanRumah_santriId_fkey" FOREIGN KEY ("santriId")
+        REFERENCES "Santri"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "CatatanRumah_penulisId_fkey" FOREIGN KEY ("penulisId")
+        REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS "CatatanRumah_santriId_createdAt_idx"
+    ON "CatatanRumah"("santriId", "createdAt");
+CREATE INDEX IF NOT EXISTS "CatatanRumah_penulisId_idx" ON "CatatanRumah"("penulisId");
+
+CREATE TABLE IF NOT EXISTS "MediaRumah" (
+    "id" SERIAL NOT NULL,
+    "catatanId" INTEGER NOT NULL,
+    "jenis" TEXT NOT NULL,
+    "jalur" TEXT NOT NULL,
+    "namaAsli" TEXT NOT NULL,
+    "ukuran" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "MediaRumah_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "MediaRumah_catatanId_fkey" FOREIGN KEY ("catatanId")
+        REFERENCES "CatatanRumah"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS "MediaRumah_catatanId_idx" ON "MediaRumah"("catatanId");
+
+ALTER TABLE "CatatanRumah" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "MediaRumah" ENABLE ROW LEVEL SECURITY;

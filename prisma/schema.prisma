@@ -16,9 +16,43 @@ model User {
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
 
-  setoran  HafalanSetoran[]
-  presensi Presensi[]
-  anak     Santri?          @relation("WaliSantri")
+  setoran      HafalanSetoran[]
+  presensi     Presensi[]
+  anak         Santri?          @relation("WaliSantri")
+  catatanRumah CatatanRumah[]   @relation("PenulisCatatanRumah")
+}
+
+/// Laporan wali tentang kegiatan anak di rumah. Boleh ditulis kapan saja,
+/// tersusun sebagai lini masa. Media menempel pada satu catatan.
+model CatatanRumah {
+  id        Int      @id @default(autoincrement())
+  santriId  Int
+  penulisId Int
+  isi       String
+  createdAt DateTime @default(now())
+
+  santri  Santri       @relation(fields: [santriId], references: [id], onDelete: Cascade)
+  penulis User         @relation("PenulisCatatanRumah", fields: [penulisId], references: [id])
+  media   MediaRumah[]
+
+  @@index([santriId, createdAt])
+  @@index([penulisId])
+}
+
+/// Foto atau video yang menempel pada satu catatan rumah. Berkasnya sendiri
+/// ada di Supabase Storage; di sini hanya disimpan jalur dan keterangannya.
+model MediaRumah {
+  id        Int      @id @default(autoincrement())
+  catatanId Int
+  jenis     String
+  jalur     String
+  namaAsli  String
+  ukuran    Int
+  createdAt DateTime @default(now())
+
+  catatan CatatanRumah @relation(fields: [catatanId], references: [id], onDelete: Cascade)
+
+  @@index([catatanId])
 }
 
 model Santri {
@@ -35,8 +69,9 @@ model Santri {
   waliId Int?  @unique
   wali   User? @relation("WaliSantri", fields: [waliId], references: [id], onDelete: SetNull)
 
-  setoran  HafalanSetoran[]
-  presensi Presensi[]
+  setoran      HafalanSetoran[]
+  presensi     Presensi[]
+  catatanRumah CatatanRumah[]
 
   @@index([name])
 }
@@ -84,9 +119,9 @@ model Presensi {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  santri     Santri    @relation(fields: [santriId], references: [id], onDelete: Cascade)
-  kegiatan   Kegiatan  @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
-  recordedBy User?     @relation(fields: [recordedById], references: [id])
+  santri     Santri   @relation(fields: [santriId], references: [id], onDelete: Cascade)
+  kegiatan   Kegiatan @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+  recordedBy User?    @relation(fields: [recordedById], references: [id])
 
   @@unique([santriId, kegiatanId, date])
   @@index([date])

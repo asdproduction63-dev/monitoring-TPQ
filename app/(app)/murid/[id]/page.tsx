@@ -9,6 +9,7 @@ import { Badge, PresensiBadge, SetoranBadge } from "@/components/badges";
 import { ConfirmSubmit } from "@/components/confirm-submit";
 import { Alert } from "@/components/alert";
 import { Stat, StatBand } from "@/components/stat-band";
+import { LiniMasaRumah } from "@/components/lini-masa-rumah";
 import {
   btnMini,
   btnPrimary,
@@ -32,7 +33,7 @@ export default async function MuridDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ saved?: string; error?: string }>;
 }) {
-  await requireStaff();
+  const user = await requireStaff();
   const { id } = await params;
   const sp = await searchParams;
   const santriId = Number(id);
@@ -64,7 +65,8 @@ export default async function MuridDetailPage({
 
   if (!santri) notFound();
 
-  const [jumlahSetoran, jumlahLulus, setoran30, presensi30, jumlahPresensi] = await Promise.all([
+  const [jumlahSetoran, jumlahLulus, setoran30, presensi30, jumlahPresensi, catatanRumah] =
+    await Promise.all([
     prisma.hafalanSetoran.count({ where: { santriId } }),
     prisma.hafalanSetoran.count({ where: { santriId, status: "LULUS" } }),
     prisma.hafalanSetoran.count({
@@ -76,6 +78,19 @@ export default async function MuridDetailPage({
       _count: { _all: true },
     }),
     prisma.presensi.count({ where: { santriId } }),
+    prisma.catatanRumah.findMany({
+      where: { santriId },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        isi: true,
+        createdAt: true,
+        penulisId: true,
+        penulis: { select: { name: true } },
+        media: { select: { id: true, jenis: true, jalur: true, namaAsli: true } },
+      },
+    }),
   ]);
 
   const total30 = presensi30.reduce((sum, row) => sum + row._count._all, 0);
@@ -233,6 +248,25 @@ export default async function MuridDetailPage({
             </table>
           </div>
         )}
+      </section>
+
+      <section>
+        <div className="mb-3">
+          <h2 className={cardTitleClass}>Laporan rumah dari wali</h2>
+          <p className={cardSubClass}>
+            {catatanRumah.length === 0
+              ? "Wali belum mengirim catatan apa pun."
+              : catatanRumah.length === 10
+                ? "10 catatan terbaru dari wali murid."
+                : `${catatanRumah.length} catatan dari wali murid.`}
+          </p>
+        </div>
+        <LiniMasaRumah
+          catatan={catatanRumah}
+          idPengguna={user.id}
+          admin={user.role === "ADMIN"}
+          kosong="Belum ada laporan dari wali untuk murid ini."
+        />
       </section>
 
       <section className={cardClass}>
