@@ -197,3 +197,11 @@ CREATE INDEX IF NOT EXISTS "MediaRumah_catatanId_idx" ON "MediaRumah"("catatanId
 
 ALTER TABLE "CatatanRumah" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "MediaRumah" ENABLE ROW LEVEL SECURITY;
+
+-- =====================================================================
+-- Tambahan: penanda kapan tiap staf terakhir membuka daftar laporan
+-- rumah. Dipakai menghitung berapa catatan yang belum ia baca.
+-- Aman dijalankan ulang pada database yang sudah ada.
+-- =====================================================================
+
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "catatanDibacaAt" TIMESTAMP(3);

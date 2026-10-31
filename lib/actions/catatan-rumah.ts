@@ -132,6 +132,24 @@ export async function simpanCatatan(
   return { ok: true };
 }
 
+/**
+ * Tandai bahwa staf ini sudah membuka daftar laporan rumah. Dipanggil dari
+ * halaman daftar, bukan saat render, supaya penulisan tidak terjadi di
+ * tengah proses menggambar halaman.
+ */
+export async function tandaiCatatanDibaca(): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user || user.role === "WALI") return;
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { catatanDibacaAt: new Date() },
+  });
+
+  // Penanda jumlah ada di sidebar, yang hidup di layout.
+  revalidatePath("/", "layout");
+}
+
 /** Hapus catatan beserta berkasnya. Penulis boleh menghapus miliknya sendiri. */
 export async function hapusCatatan(catatanId: number): Promise<HasilSimpan> {
   const user = await getCurrentUser();

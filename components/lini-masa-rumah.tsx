@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { formatTanggalWaktu } from "@/lib/format";
 import { tautanBaca } from "@/lib/storage";
 import { HapusCatatan } from "@/components/hapus-catatan";
@@ -17,6 +18,8 @@ export type CatatanRingkas = {
   penulisId: number;
   penulis: { name: string };
   media: MediaRingkas[];
+  /// Diisi hanya pada daftar gabungan, supaya terlihat ini catatan murid siapa.
+  santri?: { id: number; name: string; kelas: string };
 };
 
 /**
@@ -28,11 +31,18 @@ export async function LiniMasaRumah({
   idPengguna,
   admin = false,
   kosong,
+  tandaiBaru = false,
+  batasBaru = null,
 }: {
   catatan: CatatanRingkas[];
   idPengguna: number;
   admin?: boolean;
   kosong: string;
+  /// Nyalakan penanda "Baru" pada daftar gabungan milik staf.
+  tandaiBaru?: boolean;
+  /// Waktu terakhir staf membuka daftar. Kosong berarti belum pernah,
+  /// sehingga seluruh catatan terhitung baru.
+  batasBaru?: Date | null;
 }) {
   if (catatan.length === 0) {
     return (
@@ -56,7 +66,25 @@ export async function LiniMasaRumah({
       {denganTautan.map((c) => (
         <li key={c.id} className={cardClass}>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-ink-100 px-4 py-2.5">
-            <p className="text-[12.5px] font-medium text-ink-800">{c.penulis.name}</p>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              {c.santri ? (
+                <Link
+                  href={`/murid/${c.santri.id}`}
+                  className="text-[13px] font-medium text-ink-900 hover:text-brand-700"
+                >
+                  {c.santri.name}
+                </Link>
+              ) : null}
+              <p className="text-[12.5px] text-ink-600">
+                {c.santri ? `${c.santri.kelas} · ` : ""}
+                {c.penulis.name}
+              </p>
+              {tandaiBaru && (batasBaru === null || c.createdAt > batasBaru) ? (
+                <span className="rounded-sm border border-brass-200 bg-brass-50 px-1.5 py-0.5 text-[10.5px] font-medium leading-[1.35] text-brass-700">
+                  Baru
+                </span>
+              ) : null}
+            </div>
             <time className="text-[12px] text-ink-500">{formatTanggalWaktu(c.createdAt)}</time>
           </div>
 

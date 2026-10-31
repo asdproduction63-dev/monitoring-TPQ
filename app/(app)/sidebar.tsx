@@ -51,6 +51,13 @@ const icons = {
       <path d="M4.2 13.4V9.1M8 13.4V4.2M11.8 13.4V6.7" />
     </svg>
   ),
+  rumah: (
+    <svg viewBox="0 0 16 16" {...stroke} className={iconClass}>
+      <path d="M2.2 7.3 8 2.5l5.8 4.8" />
+      <path d="M3.7 8.5v4.6c0 .3.2.5.5.5h7.6c.3 0 .5-.2.5-.5V8.5" />
+      <path d="M6.6 13.6V9.8h2.8v3.8" />
+    </svg>
+  ),
   kirim: (
     <svg viewBox="0 0 16 16" {...stroke} className={iconClass}>
       <path d="M14.2 1.8 7.4 8.6" />
@@ -80,6 +87,7 @@ const navGroups: NavGroup[] = [
     label: "Catatan",
     items: [
       { href: "/murid", label: "Data Murid", icon: icons.murid },
+      { href: "/laporan-rumah", label: "Laporan Rumah", icon: icons.rumah },
       { href: "/laporan", label: "Laporan", icon: icons.laporan },
       { href: "/pemberitahuan", label: "Pemberitahuan", icon: icons.kirim },
       { href: "/pengaturan", label: "Pengaturan", icon: icons.pengaturan },
@@ -96,10 +104,13 @@ export function Sidebar({
   user,
   namaTpq,
   periode,
+  catatanBaru = 0,
 }: {
   user: SessionUser;
   namaTpq: string;
   periode: string;
+  /// Jumlah laporan rumah yang belum dibuka staf ini.
+  catatanBaru?: number;
 }) {
   const pathname = usePathname();
 
@@ -144,6 +155,14 @@ export function Sidebar({
                 >
                   <span className={active ? "text-brand-600" : "text-ink-400"}>{item.icon}</span>
                   <span className="whitespace-nowrap">{item.label}</span>
+                  {item.href === "/laporan-rumah" && catatanBaru > 0 ? (
+                    <span
+                      aria-label={`${catatanBaru} laporan belum dibaca`}
+                      className="tnum ml-auto rounded-full bg-clay-500 px-1.5 py-px text-[10.5px] font-semibold leading-[1.45] text-white"
+                    >
+                      {catatanBaru > 99 ? "99+" : catatanBaru}
+                    </span>
+                  ) : null}
                 </Link>
               );
             })}

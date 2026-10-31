@@ -1,4 +1,5 @@
 import { requireStaff } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
 import { logout } from "@/lib/actions/auth";
 import { ROLES } from "@/lib/constants";
@@ -9,9 +10,24 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const [user, settings] = await Promise.all([requireStaff(), getSettings()]);
   const periode = `T.A. ${settings.tahunAjaran} · Semester ${settings.semester}`;
 
+  // Penanda di sidebar: laporan rumah yang masuk setelah staf ini terakhir
+  // membuka daftarnya. Tiap orang punya hitungannya sendiri.
+  const akun = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { catatanDibacaAt: true },
+  });
+  const catatanBaru = await prisma.catatanRumah.count({
+    where: akun?.catatanDibacaAt ? { createdAt: { gt: akun.catatanDibacaAt } } : {},
+  });
+
   return (
     <div className="bg-app min-h-screen lg:flex">
-      <Sidebar user={user} namaTpq={settings.namaTpq} periode={periode} />
+      <Sidebar
+        user={user}
+        namaTpq={settings.namaTpq}
+        periode={periode}
+        catatanBaru={catatanBaru}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="app-bar bg-topbar sticky top-0 z-20 border-b border-ink-200 px-4 py-2.5 lg:px-8">
