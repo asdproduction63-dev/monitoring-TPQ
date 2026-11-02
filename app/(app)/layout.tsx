@@ -4,6 +4,7 @@ import { getSettings } from "@/lib/settings";
 import { logout } from "@/lib/actions/auth";
 import { ROLES } from "@/lib/constants";
 import { formatTanggalPanjang, todayISO } from "@/lib/format";
+import { KreditPembuat } from "@/components/kredit-pembuat";
 import { Sidebar } from "./sidebar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -52,6 +53,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>
+
+        <footer className="mx-auto w-full max-w-6xl px-4 pb-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-200 pt-4">
+            <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+            <KreditPembuat />
+          </div>
+        </footer>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { KreditPembuat } from "@/components/kredit-pembuat";
 import { NavWali } from "./nav";
 import { requireWali } from "@/lib/auth";
 import { getSettings } from "@/lib/settings";
@@ -47,6 +48,13 @@ export default async function RaportLayout({ children }: { children: React.React
         <NavWali />
         {children}
       </main>
+
+      <footer className="mx-auto w-full max-w-3xl px-4 pb-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-200 pt-4">
+          <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+          <KreditPembuat />
+        </div>
+      </footer>
     </div>
   );
 }

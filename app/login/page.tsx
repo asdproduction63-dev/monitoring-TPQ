@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getSettings } from "@/lib/settings";
+import { KreditPembuat } from "@/components/kredit-pembuat";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Masuk" };
@@ -100,6 +101,8 @@ export default async function LoginPage() {
           <p className="mt-4 text-center text-[12px] text-ink-600">
             Lupa password? Hubungi admin TPQ untuk mengatur ulang.
           </p>
+
+          <KreditPembuat lega className="mt-7 justify-center" />
         </section>
       </div>
     </div>
