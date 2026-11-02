@@ -56,8 +56,8 @@ export default async function LoginPage() {
           <Image
             src="/logo.png"
             alt={settings.namaTpq}
-            width={710}
-            height={665}
+            width={722}
+            height={804}
             priority
             className="h-auto w-[210px] animate-muncul sm:w-[250px] lg:w-[320px]"
           />

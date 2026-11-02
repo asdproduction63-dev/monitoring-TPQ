@@ -120,7 +120,7 @@ export function Sidebar({
         <Image
           src="/logo-lambang.png"
           alt=""
-          width={507}
+          width={508}
           height={482}
           className="h-9 w-auto shrink-0 lg:h-10"
         />
