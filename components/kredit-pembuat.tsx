@@ -22,30 +22,32 @@ export function KreditPembuat({
   className?: string;
 }) {
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <span aria-hidden="true" className="h-px w-6 bg-brass-300" />
+    <div className={`flex items-center gap-2 ${className}`}>
+      <span aria-hidden="true" className="h-px w-5 bg-brass-300" />
 
       <p
-        className={`font-mono uppercase leading-none tracking-[0.18em] text-ink-400 ${
-          lega ? "text-[10.5px]" : "text-[10px]"
+        className={`font-mono uppercase leading-none tracking-[0.16em] text-ink-400 ${
+          lega ? "text-[9.5px]" : "text-[9px]"
         }`}
       >
         Project by
       </p>
 
-      <span className="flex items-center gap-2">
-        {/* Di bawah 28px huruf A, S, dan D saling menempel dan monogramnya
-            terbaca sekadar satu blok warna, jadi ukurannya tidak diturunkan. */}
+      <span className="flex items-center gap-1.5">
+        {/* Monogramnya tidak perlu terbaca huruf per huruf, karena namanya
+            sudah tertulis tepat di sebelahnya. Jadi ukurannya dipatok
+            sedikit di atas tinggi huruf namanya saja, supaya kreditnya
+            tidak menarik perhatian lebih dari isi halaman. */}
         <Image
           src="/asd-monogram.png"
           alt=""
           width={197}
           height={195}
-          className={lega ? "h-8 w-auto" : "h-7 w-auto"}
+          className={lega ? "h-[18px] w-auto" : "h-4 w-auto"}
         />
         <span
-          className={`font-serif font-semibold leading-none tracking-tight text-ink-700 ${
-            lega ? "text-[13.5px]" : "text-[12.5px]"
+          className={`font-serif font-medium leading-none tracking-tight text-ink-500 ${
+            lega ? "text-[12px]" : "text-[11px]"
           }`}
         >
           {NAMA}
