@@ -69,10 +69,22 @@ try {
   console.log("\n  ATUR ULANG PASSWORD AKUN");
   console.log(`  Database: ${tujuan(url)}\n`);
 
-  const daftar = await prisma.user.findMany({
-    orderBy: [{ role: "asc" }, { username: "asc" }],
-    select: { id: true, name: true, username: true, role: true, active: true },
-  });
+  // Sengaja tanpa `prisma generate` di depannya: Prisma CLI menutup stdin,
+  // sehingga pertanyaan di bawah langsung kena EOF dan skripnya keluar
+  // sebelum sempat diketik. Konsekuensinya client bisa tertinggal menunjuk
+  // SQLite kalau yang terakhir dijalankan `npm run dev:local`.
+  let daftar;
+  try {
+    daftar = await prisma.user.findMany({
+      orderBy: [{ role: "asc" }, { username: "asc" }],
+      select: { id: true, name: true, username: true, role: true, active: true },
+    });
+  } catch (galat) {
+    console.error(`\n  Gagal membaca database: ${galat.message.split("\n")[0]}`);
+    console.error("  Kalau sebelumnya menjalankan `npm run dev:local`, jalankan");
+    console.error("  `npx prisma generate` sekali dulu, lalu ulangi perintah ini.\n");
+    process.exit(1);
+  }
 
   if (daftar.length === 0) {
     console.log("  Tidak ada akun sama sekali di database ini.");
