@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
+import { DaftarServiceWorker } from "@/components/daftar-service-worker";
 
 const sans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -29,6 +30,14 @@ export const metadata: Metadata = {
     template: "%s | TPQ Monitor",
   },
   description: "Aplikasi monitoring setoran dan kegiatan harian murid TPQ.",
+  applicationName: "TPQ Monitor",
+  // iOS tidak membaca manifest. Supaya ikon di layar utama dan tampilan tanpa
+  // bilah alamat juga jalan di iPhone, keterangannya ditulis terpisah di sini.
+  appleWebApp: {
+    capable: true,
+    title: "TPQ Monitor",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
@@ -40,7 +49,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
-      <body className="min-h-screen font-sans">{children}</body>
+      <body className="min-h-screen font-sans">
+        {children}
+        <DaftarServiceWorker />
+      </body>
     </html>
   );
 }

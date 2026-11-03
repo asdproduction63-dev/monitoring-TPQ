@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f3a3a" />
+    <title>Tidak ada koneksi | TPQ Monitor</title>
+    <!--
+      Halaman ini disimpan service worker saat aplikasi pertama dibuka, lalu
+      ditampilkan kalau ada halaman yang dibuka tanpa koneksi. Karena itu semua
+      gayanya ditulis langsung di sini dan hurufnya memakai huruf bawaan
+      perangkat: berkas lain belum tentu ikut tersimpan.
+    -->
+    <style>
+      :root {
+        --kertas: #faf7f0;
+        --tinta: #1a1713;
+        --tinta-lirih: #585145;
+        --tinta-pudar: #8a8375;
+        --garis: #e3ddd0;
+        --kuningan: #b08d57;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        background: var(--kertas);
+        color: var(--tinta);
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main { max-width: 25rem; text-align: center; }
+      img { width: 72px; height: 72px; }
+      .label {
+        margin: 1.75rem 0 0;
+        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--tinta-pudar);
+      }
+      h1 {
+        margin: 0.6rem 0 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .garis {
+        display: block;
+        width: 2.5rem;
+        height: 1px;
+        margin: 1.5rem auto;
+        background: var(--kuningan);
+        opacity: 0.6;
+      }
+      p {
+        margin: 0;
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: var(--tinta-lirih);
+      }
+      button {
+        margin-top: 1.75rem;
+        padding: 0.55rem 1.4rem;
+        border: 1px solid var(--garis);
+        border-radius: 4px;
+        background: #fff;
+        color: var(--tinta-lirih);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      button:hover { border-color: var(--tinta-pudar); color: var(--tinta); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icon-192.png" alt="" />
+      <p class="label">Tidak ada koneksi</p>
+      <h1>Halaman ini butuh internet</h1>
+      <span class="garis"></span>
+      <p>
+        Data setoran dan presensi diambil langsung dari server, jadi tidak bisa
+        dibuka saat jaringan mati. Sambungkan kembali internetnya, lalu coba
+        muat ulang.
+      </p>
+      <button type="button" onclick="location.reload()">Coba lagi</button>
+    </main>
+  </body>
+</html>
