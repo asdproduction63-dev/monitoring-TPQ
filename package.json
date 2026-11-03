@@ -13,7 +13,8 @@
     "db:local": "node prisma/local.mjs setup",
     "db:local:reset": "node prisma/local.mjs setup --reset",
     "db:migrate:sqlite": "node prisma/migrate-sqlite.mjs",
-    "db:reset": "prisma db push --force-reset && prisma db seed"
+    "db:reset": "prisma db push --force-reset && prisma db seed",
+    "akun:password": "prisma generate && node --env-file=.env prisma/atur-ulang-password.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
