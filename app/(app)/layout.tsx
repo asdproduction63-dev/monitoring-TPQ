@@ -5,6 +5,7 @@ import { logout } from "@/lib/actions/auth";
 import { ROLES } from "@/lib/constants";
 import { formatTanggalPanjang, todayISO } from "@/lib/format";
 import { KreditPembuat } from "@/components/kredit-pembuat";
+import { TombolPasang } from "@/components/tombol-pasang";
 import { Sidebar } from "./sidebar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -56,7 +57,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
         <footer className="mx-auto w-full max-w-6xl px-4 pb-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-200 pt-4">
-            <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+              <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+              <TombolPasang />
+            </div>
             <KreditPembuat />
           </div>
         </footer>

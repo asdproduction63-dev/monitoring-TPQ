@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { KreditPembuat } from "@/components/kredit-pembuat";
+import { TombolPasang } from "@/components/tombol-pasang";
 import { NavWali } from "./nav";
 import { requireWali } from "@/lib/auth";
 import { getSettings } from "@/lib/settings";
@@ -51,7 +52,10 @@ export default async function RaportLayout({ children }: { children: React.React
 
       <footer className="mx-auto w-full max-w-3xl px-4 pb-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-200 pt-4">
-          <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <p className="text-[11px] text-ink-400">{settings.namaTpq}</p>
+            <TombolPasang />
+          </div>
           <KreditPembuat />
         </div>
       </footer>

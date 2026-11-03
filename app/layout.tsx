@@ -51,6 +51,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
       <body className="min-h-screen font-sans">
+        {/* Tawaran pemasangan dari Chrome sering datang sebelum React sempat
+            hidup. Kalau tidak ditangkap di sini, tawarannya hilang dan tombol
+            "Pasang aplikasi" tidak pernah bisa muncul. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__pasang=e;window.dispatchEvent(new Event('pasang-siap'))});",
+          }}
+        />
         {children}
         {/* Pendaftaran service worker sengaja ditulis langsung di HTML, bukan
             lewat komponen klien: supaya berjalan sedini mungkin dan supaya
