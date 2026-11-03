@@ -31,8 +31,10 @@ export const metadata: Metadata = {
   },
   description: "Aplikasi monitoring setoran dan kegiatan harian murid TPQ.",
   applicationName: "TPQ Monitor",
-  // iOS tidak membaca manifest. Supaya ikon di layar utama dan tampilan tanpa
-  // bilah alamat juga jalan di iPhone, keterangannya ditulis terpisah di sini.
+  // iOS tidak membaca manifest, jadi keterangan aplikasinya ditulis terpisah
+  // di sini. Next menuliskannya sebagai "mobile-web-app-capable", sedangkan
+  // Safari versi lama masih membaca nama lamanya, jadi dua-duanya disertakan.
+  other: { "apple-mobile-web-app-capable": "yes" },
   appleWebApp: {
     capable: true,
     title: "TPQ Monitor",
