@@ -16,6 +16,8 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     display_override: ["standalone", "minimal-ui"],
     orientation: "any",
+    // Tidak ada versi aplikasi tokonya; ini satu-satunya.
+    prefer_related_applications: false,
     background_color: "#faf7f0",
     theme_color: "#0f3a3a",
     icons: [

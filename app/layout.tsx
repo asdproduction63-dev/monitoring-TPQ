@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
-import { DaftarServiceWorker } from "@/components/daftar-service-worker";
 
 const sans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -53,7 +52,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="id" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
       <body className="min-h-screen font-sans">
         {children}
-        <DaftarServiceWorker />
+        {/* Pendaftaran service worker sengaja ditulis langsung di HTML, bukan
+            lewat komponen klien: supaya berjalan sedini mungkin dan supaya
+            alat pemeriksa PWA bisa menemukannya tanpa membongkar bundel JS.
+            Hanya di production — di mode dev, simpanannya justru membuat
+            perubahan kode tidak kelihatan. */}
+        {process.env.NODE_ENV === "production" ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}",
+            }}
+          />
+        ) : null}
       </body>
     </html>
   );
