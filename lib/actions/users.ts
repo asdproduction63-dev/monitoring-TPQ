@@ -7,6 +7,7 @@ import { z } from "zod";
 import { requireAdmin, requireUser } from "@/lib/auth";
 import { ROLES } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { hapusBerkas } from "@/lib/storage";
 import { setSessionCookie } from "@/lib/session";
 import { redirectWithError } from "@/lib/actions/helpers";
 
@@ -239,4 +240,79 @@ export async function updateUser(formData: FormData) {
 
   revalidatePath("/pengaturan");
   redirect("/pengaturan?tab=pengguna&saved=1");
+}
+
+/**
+ * Hapus akun pengguna beserta tulisan yang melekat namanya: setoran yang
+ * pernah ia uji dan catatan rumah yang pernah ia tulis.
+ *
+ * Presensi tidak ikut terhapus — kehadiran itu peristiwa tentang murid, bukan
+ * tentang pencatatnya, jadi barisnya tetap ada dan hanya kehilangan nama
+ * petugasnya. Murid yang diampu akun wali juga tidak ikut terhapus, hanya
+ * terlepas tautannya.
+ *
+ * Admin tidak boleh menghapus akunnya sendiri. Hitungan admin aktif di bawah
+ * adalah jaring pengaman untuk kasus langka dua admin saling menghapus pada
+ * saat yang sama; tanpa itu aplikasi bisa ditinggalkan tanpa admin sama
+ * sekali, dan tidak ada lagi yang bisa membuat akun baru.
+ */
+export async function deleteUser(formData: FormData) {
+  const current = await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (!Number.isInteger(id) || id <= 0) {
+    redirectWithError(TAB_PENGGUNA, "Pengguna tidak ditemukan.");
+  }
+  if (id === current.id) {
+    redirectWithError(TAB_PENGGUNA, "Anda tidak bisa menghapus akun sendiri.");
+  }
+
+  const target = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      role: true,
+      active: true,
+      catatanRumah: { select: { media: { select: { jalur: true } } } },
+    },
+  });
+  if (!target) {
+    redirectWithError(TAB_PENGGUNA, "Pengguna tidak ditemukan.");
+  }
+
+  if (target.role === "ADMIN" && target.active) {
+    const adminAktif = await prisma.user.count({ where: { role: "ADMIN", active: true } });
+    if (adminAktif <= 1) {
+      redirectWithError(
+        TAB_PENGGUNA,
+        "Ini satu-satunya akun admin yang aktif. Angkat admin lain dulu sebelum menghapusnya.",
+      );
+    }
+  }
+
+  const konfirmasi = String(formData.get("konfirmasi") ?? "").trim();
+  if (konfirmasi.toLowerCase() !== target.name.trim().toLowerCase()) {
+    redirectWithError(TAB_PENGGUNA, "Nama yang diketik tidak cocok, jadi penghapusan dibatalkan.");
+  }
+
+  const jalur = target.catatanRumah.flatMap((c) => c.media.map((m) => m.jalur));
+
+  // Urutannya penting: baris yang menunjuk ke akun ini harus lepas lebih dulu,
+  // baru akunnya boleh hilang. Dikerjakan sebagai satu transaksi supaya tidak
+  // ada keadaan setengah jadi kalau salah satunya gagal.
+  await prisma.$transaction([
+    prisma.presensi.updateMany({ where: { recordedById: id }, data: { recordedById: null } }),
+    prisma.santri.updateMany({ where: { waliId: id }, data: { waliId: null } }),
+    prisma.hafalanSetoran.deleteMany({ where: { pengujiId: id } }),
+    prisma.catatanRumah.deleteMany({ where: { penulisId: id } }),
+    prisma.user.delete({ where: { id } }),
+  ]);
+  await hapusBerkas(jalur);
+
+  revalidatePath("/pengaturan");
+  revalidatePath("/dashboard");
+  revalidatePath("/murid");
+  revalidatePath("/hafalan");
+  revalidatePath("/laporan");
+  revalidatePath("/laporan-rumah");
+  redirect(`/pengaturan?tab=pengguna&deleted=${encodeURIComponent(target.name)}`);
 }

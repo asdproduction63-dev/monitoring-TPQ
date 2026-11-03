@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth";
+import { requireAdmin, requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hapusBerkas } from "@/lib/storage";
 import { redirectWithError } from "@/lib/actions/helpers";
 
 const santriSchema = z.object({
@@ -91,6 +92,60 @@ export async function updateSantri(formData: FormData) {
   revalidatePath(`/murid/${id}`);
   revalidatePath("/dashboard");
   redirect(`/murid/${id}?saved=1`);
+}
+
+/**
+ * Hapus murid beserta seluruh jejaknya: setoran, presensi, catatan rumah,
+ * dan berkas foto atau videonya di penyimpanan.
+ *
+ * Hanya admin, dan hanya kalau nama muridnya diketik ulang dengan benar —
+ * ini satu-satunya tindakan di aplikasi yang tidak bisa dibatalkan. Untuk
+ * murid yang sekadar berhenti mengaji, toggleSantriActive jauh lebih tepat:
+ * riwayatnya tetap utuh untuk rekap TPQ.
+ *
+ * Akun wali yang tertaut tidak ikut terhapus, hanya terlepas tautannya.
+ */
+export async function deleteSantri(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (!Number.isInteger(id) || id <= 0) {
+    redirectWithError("/murid", "Murid tidak ditemukan.");
+  }
+
+  const santri = await prisma.santri.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      catatanRumah: { select: { media: { select: { jalur: true } } } },
+    },
+  });
+  if (!santri) {
+    redirectWithError("/murid", "Murid tidak ditemukan.");
+  }
+
+  const konfirmasi = String(formData.get("konfirmasi") ?? "").trim();
+  if (konfirmasi.toLowerCase() !== santri.name.trim().toLowerCase()) {
+    redirectWithError(
+      `/murid/${id}`,
+      "Nama yang diketik tidak cocok, jadi penghapusan dibatalkan.",
+    );
+  }
+
+  // Jalurnya dikumpulkan sebelum barisnya hilang; setelah dihapus tidak ada
+  // lagi yang menunjuk ke berkas-berkas ini.
+  const jalur = santri.catatanRumah.flatMap((c) => c.media.map((m) => m.jalur));
+
+  // Setoran, presensi, catatan, dan medianya ikut terhapus lewat cascade.
+  await prisma.santri.delete({ where: { id } });
+  await hapusBerkas(jalur);
+
+  revalidatePath("/murid");
+  revalidatePath("/dashboard");
+  revalidatePath("/presensi");
+  revalidatePath("/laporan");
+  revalidatePath("/laporan-rumah");
+  revalidatePath("/pengaturan");
+  redirect(`/murid?deleted=${encodeURIComponent(santri.name)}`);
 }
 
 export async function toggleSantriActive(formData: FormData) {

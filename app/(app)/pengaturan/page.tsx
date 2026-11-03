@@ -5,7 +5,8 @@ import { getSettings } from "@/lib/settings";
 import { KATEGORI_KEGIATAN, ROLES } from "@/lib/constants";
 import { updateSettings } from "@/lib/actions/settings";
 import { createKegiatan, deleteKegiatan, updateKegiatan } from "@/lib/actions/kegiatan";
-import { createUser, updateOwnAccount, updateUser } from "@/lib/actions/users";
+import { createUser, deleteUser, updateOwnAccount, updateUser } from "@/lib/actions/users";
+import { HapusAnggota } from "@/components/hapus-anggota";
 import { Badge, RoleBadge } from "@/components/badges";
 import { Alert } from "@/components/alert";
 import { ConfirmSubmit } from "@/components/confirm-submit";
@@ -35,6 +36,24 @@ function Wajib() {
 }
 
 /** Kotak keterangan di samping form — kertas polos dengan garis tegak, bukan kartu berwarna. */
+/**
+ * Kalimat penenang untuk dialog hapus akun: menyebut apa yang justru tetap
+ * tinggal, supaya admin tidak mengira seisi riwayat TPQ ikut terbawa.
+ */
+function sisaSetelahHapusAkun(jumlahPresensi: number, namaAnak: string | null) {
+  const bagian: string[] = [];
+  if (jumlahPresensi > 0) {
+    bagian.push(
+      `${jumlahPresensi} presensi yang pernah ia isi tetap tersimpan, hanya kehilangan nama pencatatnya`,
+    );
+  }
+  if (namaAnak) {
+    bagian.push(`${namaAnak} tidak ikut terhapus, hanya terlepas dari akun walinya`);
+  }
+  if (bagian.length === 0) return undefined;
+  return `Yang tetap aman: ${bagian.join("; ")}.`;
+}
+
 function Catatan({ title, items }: { title: string; items: string[] }) {
   return (
     <aside className="border-l-2 border-ink-300 bg-paper-200 px-4 py-4">
@@ -105,7 +124,11 @@ export default async function PengaturanPage({
         }),
         prisma.user.findMany({
           orderBy: [{ role: "asc" }, { name: "asc" }],
-          include: { anak: { select: { id: true, name: true, kelas: true } } },
+          include: {
+            anak: { select: { id: true, name: true, kelas: true } },
+            // Dipakai dialog hapus untuk memperlihatkan apa yang ikut hilang.
+            _count: { select: { setoran: true, catatanRumah: true, presensi: true } },
+          },
         }),
         prisma.santri.findMany({
           orderBy: [{ active: "desc" }, { name: "asc" }],
@@ -153,7 +176,16 @@ export default async function PengaturanPage({
       ) : null}
       {sp.deleted ? (
         <div className="mb-5">
-          <Alert type="success" message="Data berhasil dihapus." />
+          {/* Penghapusan kegiatan hanya mengirim penanda, sedangkan penghapusan
+              akun mengirim namanya — yang terakhir pantas disebut lengkap. */}
+          <Alert
+            type="success"
+            message={
+              sp.deleted === "1"
+                ? "Data berhasil dihapus."
+                : `Akun ${sp.deleted} sudah dihapus permanen.`
+            }
+          />
         </div>
       ) : null}
 
@@ -785,6 +817,26 @@ export default async function PengaturanPage({
                     </button>
                   </div>
                 </form>
+
+                {u.id === user.id ? null : (
+                  <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-ink-100 px-4 py-2.5">
+                    <p className="text-[11.5px] leading-snug text-ink-400">
+                      Cukup lepas centang di atas kalau hanya ingin menutup aksesnya.
+                    </p>
+                    <HapusAnggota
+                      ringkas
+                      aksi={deleteUser}
+                      id={u.id}
+                      nama={u.name}
+                      jenis="akun"
+                      rincian={[
+                        { label: "Setoran yang ia uji", jumlah: u._count.setoran },
+                        { label: "Catatan rumah yang ia tulis", jumlah: u._count.catatanRumah },
+                      ]}
+                      keterangan={sisaSetelahHapusAkun(u._count.presensi, u.anak?.name ?? null)}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

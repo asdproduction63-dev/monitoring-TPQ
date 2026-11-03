@@ -14,6 +14,10 @@ export const btnSecondary =
 export const btnDanger =
   "inline-flex items-center justify-center gap-2 rounded border border-clay-200 bg-white px-3.5 py-2 text-[13px] font-medium text-clay-600 transition hover:bg-clay-50 disabled:cursor-not-allowed disabled:opacity-55";
 
+/** Khusus langkah terakhir yang benar-benar menghapus, bukan sekadar menuju ke sana. */
+export const btnDangerSolid =
+  "inline-flex items-center justify-center gap-2 rounded border border-clay-700 bg-clay-600 px-3.5 py-2 text-[13px] font-medium text-white transition hover:bg-clay-700 disabled:cursor-not-allowed disabled:border-clay-200 disabled:bg-clay-200";
+
 export const btnGhost =
   "inline-flex items-center gap-1.5 rounded px-2 py-1 text-[12px] font-medium text-ink-600 transition hover:bg-paper-200 hover:text-ink-900";
 

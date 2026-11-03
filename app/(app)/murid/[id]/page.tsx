@@ -4,7 +4,8 @@ import { requireStaff } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { todayISO, formatTanggal, formatTanggalWaktu, formatPersen } from "@/lib/format";
 import { JENIS_SETORAN, PREDIKAT } from "@/lib/constants";
-import { toggleSantriActive } from "@/lib/actions/murid";
+import { deleteSantri, toggleSantriActive } from "@/lib/actions/murid";
+import { HapusAnggota } from "@/components/hapus-anggota";
 import { Badge, PresensiBadge, SetoranBadge } from "@/components/badges";
 import { ConfirmSubmit } from "@/components/confirm-submit";
 import { Alert } from "@/components/alert";
@@ -65,8 +66,15 @@ export default async function MuridDetailPage({
 
   if (!santri) notFound();
 
-  const [jumlahSetoran, jumlahLulus, setoran30, presensi30, jumlahPresensi, catatanRumah] =
-    await Promise.all([
+  const [
+    jumlahSetoran,
+    jumlahLulus,
+    setoran30,
+    presensi30,
+    jumlahPresensi,
+    catatanRumah,
+    jumlahCatatan,
+  ] = await Promise.all([
     prisma.hafalanSetoran.count({ where: { santriId } }),
     prisma.hafalanSetoran.count({ where: { santriId, status: "LULUS" } }),
     prisma.hafalanSetoran.count({
@@ -91,6 +99,9 @@ export default async function MuridDetailPage({
         media: { select: { id: true, jenis: true, jalur: true, namaAsli: true } },
       },
     }),
+    // Lini masanya dibatasi 10, jadi jumlah sebenarnya dihitung terpisah untuk
+    // ditampilkan di dialog hapus.
+    prisma.catatanRumah.count({ where: { santriId } }),
   ]);
 
   const total30 = presensi30.reduce((sum, row) => sum + row._count._all, 0);
@@ -164,6 +175,24 @@ export default async function MuridDetailPage({
                 {santri.active ? "Nonaktifkan" : "Aktifkan"}
               </ConfirmSubmit>
             </form>
+            {user.role === "ADMIN" ? (
+              <HapusAnggota
+                aksi={deleteSantri}
+                id={santri.id}
+                nama={santri.name}
+                jenis="murid"
+                rincian={[
+                  { label: "Setoran hafalan", jumlah: jumlahSetoran },
+                  { label: "Baris presensi", jumlah: jumlahPresensi },
+                  { label: "Catatan rumah beserta fotonya", jumlah: jumlahCatatan },
+                ]}
+                keterangan={
+                  santri.wali
+                    ? `Akun wali ${santri.wali.name} tidak ikut terhapus, hanya terlepas tautannya. Hapus terpisah dari Pengaturan kalau memang tidak dipakai lagi.`
+                    : undefined
+                }
+              />
+            ) : null}
           </div>
         </div>
 

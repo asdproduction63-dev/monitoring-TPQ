@@ -26,7 +26,13 @@ type FilterStatus = "aktif" | "nonaktif" | "semua";
 export default async function MuridPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string; error?: string; saved?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    status?: string;
+    error?: string;
+    saved?: string;
+    deleted?: string;
+  }>;
 }) {
   await requireStaff();
   const sp = await searchParams;
@@ -93,6 +99,14 @@ export default async function MuridPage({
       {sp.saved ? (
         <div className="mb-5">
           <Alert type="success" message="Data murid berhasil disimpan." />
+        </div>
+      ) : null}
+      {sp.deleted ? (
+        <div className="mb-5">
+          <Alert
+            type="success"
+            message={`${sp.deleted} sudah dihapus permanen beserta seluruh riwayatnya.`}
+          />
         </div>
       ) : null}
 
