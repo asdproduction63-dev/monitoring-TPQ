@@ -1,9 +1,9 @@
+import { AksiRaport } from "@/components/aksi-raport";
 import { requireWali } from "@/lib/auth";
 import { isISODate } from "@/lib/format";
 import { awalPekan, daftarPekan, formatRentangPekan, labelPekan, pekanBerjalan } from "@/lib/pekan";
 import {
   btnPrimary,
-  btnSecondary,
   cardClass,
   labelClass,
   noteClass,
@@ -66,12 +66,9 @@ export default async function RaportPage({
               ))}
             </select>
           </div>
-          <button type="submit" className={btnSecondary}>
+          <button type="submit" className={btnPrimary}>
             Tampilkan
           </button>
-          <a href={`${sumber}&unduh=1`} className={btnPrimary} download>
-            Unduh gambar
-          </a>
         </form>
       </div>
 
@@ -82,7 +79,9 @@ export default async function RaportPage({
         </p>
       ) : null}
 
-      <div className="overflow-hidden rounded border border-ink-200 bg-white">
+      {/* lembar-a4 dipakai aturan cetak di globals.css: saat tombol Cetak
+          ditekan, kotak inilah yang memenuhi satu halaman A4 penuh. */}
+      <div className="lembar-a4 overflow-hidden rounded border border-ink-200 bg-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={sumber}
@@ -93,9 +92,14 @@ export default async function RaportPage({
         />
       </div>
 
+      <div className="mt-4">
+        <AksiRaport sumber={sumber} />
+      </div>
+
       <p className={`${noteClass} mt-4`}>
-        Raport diterbitkan tiap pekan, Senin sampai Minggu. Gambar yang diunduh berisi setoran
-        hafalan, presensi kegiatan, dan catatan ustadz pada pekan tersebut.
+        Raport diterbitkan tiap pekan, Senin sampai Minggu. Isinya setoran hafalan, presensi
+        kegiatan, dan catatan ustadz pada pekan tersebut. Gambarnya sudah berukuran A4, jadi
+        Cetak A4 menghasilkan satu halaman penuh tanpa pinggiran putih.
       </p>
     </div>
   );

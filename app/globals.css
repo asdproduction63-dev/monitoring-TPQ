@@ -118,3 +118,46 @@
     font-size: 11px;
   }
 }
+
+/*
+ * Mode cetak raport pekanan: satu gambar memenuhi tepat satu halaman A4.
+ *
+ * Aktif hanya ketika tombol Cetak menambahkan kelas .cetak-lembar pada body,
+ * supaya pencetakan halaman lain — tabel laporan, misalnya — tidak ikut
+ * berubah. Aturan @page sendiri tidak bisa dibatasi lewat selektor, jadi
+ * tombolnya yang menyisipkan dan mencabutnya.
+ *
+ * Isinya disembunyikan dengan visibility, bukan display, supaya posisi
+ * .lembar-a4 tidak ikut bergeser saat sisa halaman menghilang.
+ */
+@media print {
+  body.cetak-lembar {
+    background: #fff;
+  }
+
+  body.cetak-lembar * {
+    visibility: hidden;
+  }
+
+  body.cetak-lembar .lembar-a4,
+  body.cetak-lembar .lembar-a4 * {
+    visibility: visible;
+  }
+
+  body.cetak-lembar .lembar-a4 {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+  }
+
+  body.cetak-lembar .lembar-a4 img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
