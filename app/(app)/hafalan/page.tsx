@@ -106,8 +106,12 @@ export default async function HafalanPage({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
-        <section className={`${cardClass} xl:sticky xl:top-20`}>
+      {/* Form dan riwayat bertumpuk di semua lebar. Tabel riwayat butuh sekitar
+          920 px; berdampingan dengan form, kolom kanannya hanya ±580 px sehingga
+          Status, Penguji, dan Hapus tersembunyi di balik gulir. Lebar form
+          dibatasi supaya tidak membentang selebar tabel. */}
+      <div className="space-y-5">
+        <section className={`${cardClass} max-w-2xl`}>
           <div className={cardHeadClass}>
             <div>
               <h2 className={cardTitleClass}>Input setoran</h2>
