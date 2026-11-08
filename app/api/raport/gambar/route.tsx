@@ -15,16 +15,20 @@ export const dynamic = "force-dynamic";
 const LEBAR = 1000;
 const TINGGI = 1414;
 
-// Diselaraskan dengan palet aplikasi.
+// Diambil dari palet aplikasi, tapi digeser beberapa anak tangga lebih gelap
+// daripada versi layarnya. Raport ini dicetak di atas kertas pada sekitar 120
+// titik per inci; warna redup yang masih nyaman dibaca di layar — garis tabel
+// ink-200, misalnya — menghilang begitu keluar dari pencetak. Angka di tiap
+// baris adalah rasio kontrasnya.
 const KERTAS = "#faf7f0";
-const TINTA = "#2c2822";
-const TINTA_REDUP = "#736c5d";
-const GARIS = "#d5cec0";
-const GARIS_TIPIS = "#e8e3d7";
+const TINTA = "#2c2822"; // ink-800
+const TINTA_REDUP = "#585145"; // ink-600, 7,3:1 terhadap KERTAS
+const GARIS = "#928a79"; // ink-400, 3,2:1 — garis kepala tabel
+const GARIS_TIPIS = "#b5ad9c"; // ink-300, 2,1:1 — sekat antarbaris
 const HIJAU = "#0f3a3a";
-const HIJAU_MUDA = "#6ebfbc";
-const TANAH = "#8c442b";
-const KUNINGAN = "#926917";
+const HIJAU_MUDA = "#a6d8d5"; // brand-200, 7,9:1 di atas HIJAU
+const TANAH = "#8c442b"; // clay-600, 6,6:1
+const KUNINGAN = "#6f5015"; // brass-700, 6,9:1
 // Warna status presensi, diambil dari logo (mint dan pink) agar sama dengan aplikasi.
 const MINT = "#255a45";
 const PINK = "#872b47";
