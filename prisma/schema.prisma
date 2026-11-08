@@ -136,3 +136,14 @@ model Setting {
   key   String @id
   value String
 }
+
+/// Pembatas percobaan login, satu baris per username yang pernah salah sandi.
+/// Sengaja tabel tersendiri, lepas dari User: kodenya memperlakukan tabel ini
+/// sebagai boleh-tidak-ada (fail-open), jadi sebelum tabelnya dibuat di
+/// produksi, login tetap berjalan seperti biasa tanpa pembatasan.
+model LoginThrottle {
+  username       String    @id
+  gagal          Int       @default(0)
+  terkunciHingga DateTime?
+  updatedAt      DateTime  @updatedAt
+}
