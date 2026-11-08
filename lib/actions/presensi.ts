@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { PRESENSI_STATUS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { redirectWithError } from "@/lib/actions/helpers";
 
 export async function savePresensi(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireStaff();
   const date = String(formData.get("date") ?? "");
   const kegiatanId = Number(formData.get("kegiatanId"));
 

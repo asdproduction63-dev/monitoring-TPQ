@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireAdmin, requireUser } from "@/lib/auth";
+import { requireAdmin, requireStaff } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hapusBerkas } from "@/lib/storage";
 import { redirectWithError } from "@/lib/actions/helpers";
@@ -27,7 +27,7 @@ function bacaForm(formData: FormData) {
 }
 
 export async function createSantri(formData: FormData) {
-  await requireUser();
+  await requireStaff();
   const parsed = bacaForm(formData);
   if (!parsed.success) {
     redirectWithError("/murid/baru", parsed.error.issues[0]?.message ?? "Data tidak valid.");
@@ -55,7 +55,7 @@ export async function createSantri(formData: FormData) {
 }
 
 export async function updateSantri(formData: FormData) {
-  await requireUser();
+  await requireStaff();
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) {
     redirectWithError("/murid", "Murid tidak ditemukan.");
@@ -149,7 +149,7 @@ export async function deleteSantri(formData: FormData) {
 }
 
 export async function toggleSantriActive(formData: FormData) {
-  await requireUser();
+  await requireStaff();
   const id = Number(formData.get("id"));
   const redirectTo = String(formData.get("redirectTo") || "/murid");
   if (!Number.isInteger(id) || id <= 0) {

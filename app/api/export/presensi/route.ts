@@ -9,6 +9,11 @@ export async function GET(request: Request) {
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
+  // Ekspor memuat data seluruh murid, jadi hanya untuk staf. Wali hanya boleh
+  // melihat anaknya sendiri lewat halaman raport, bukan mengunduh semuanya.
+  if (user.role === "WALI") {
+    return new Response("Forbidden", { status: 403 });
+  }
 
   const url = new URL(request.url);
   const dariParam = url.searchParams.get("dari");

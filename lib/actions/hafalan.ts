@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { PREDIKAT, STATUS_SETORAN, JENIS_SETORAN } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { redirectWithError } from "@/lib/actions/helpers";
@@ -19,7 +19,7 @@ const setoranSchema = z.object({
 });
 
 export async function createSetoran(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireStaff();
 
   const parsed = setoranSchema.safeParse({
     santriId: formData.get("santriId"),
@@ -64,7 +64,7 @@ export async function createSetoran(formData: FormData) {
 }
 
 export async function deleteSetoran(formData: FormData) {
-  const user = await requireUser();
+  const user = await requireStaff();
   if (user.role !== "ADMIN") {
     redirectWithError("/hafalan", "Hanya admin yang dapat menghapus setoran.");
   }
