@@ -106,7 +106,7 @@ export default async function HafalanPage({
         </div>
       ) : null}
 
-      <div className="grid items-start gap-5 xl:grid-cols-[380px_1fr]">
+      <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
         <section className={`${cardClass} xl:sticky xl:top-20`}>
           <div className={cardHeadClass}>
             <div>
@@ -329,7 +329,7 @@ export default async function HafalanPage({
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[920px]">
+                <table className="tabel-kartu w-full sm:min-w-[920px]">
                   <thead>
                     <tr>
                       <th className={thClass}>Tanggal</th>
@@ -344,10 +344,10 @@ export default async function HafalanPage({
                   <tbody className="divide-y divide-ink-100">
                     {riwayat.map((s) => (
                       <tr key={s.id} className={rowClass}>
-                        <td className={`${tdClass} whitespace-nowrap text-ink-600`}>
+                        <td data-label="Tanggal" className={`${tdClass} whitespace-nowrap text-ink-600`}>
                           {formatTanggal(s.date)}
                         </td>
-                        <td className={tdClass}>
+                        <td data-label="Murid" className={tdClass}>
                           <Link
                             href={`/murid/${s.santri.id}`}
                             className="font-medium text-ink-800 hover:text-brand-700"
@@ -356,7 +356,7 @@ export default async function HafalanPage({
                           </Link>
                           <p className="mt-0.5 text-[12px] text-ink-500">{s.santri.kelas}</p>
                         </td>
-                        <td className={tdClass}>
+                        <td data-label="Materi" className={tdClass}>
                           <p className="font-medium text-ink-800">{s.materi}</p>
                           <p className="mt-0.5 text-[12px] text-ink-500">
                             {JENIS_SETORAN[s.type as keyof typeof JENIS_SETORAN]?.short ?? s.type}
@@ -367,13 +367,13 @@ export default async function HafalanPage({
                             </p>
                           ) : null}
                         </td>
-                        <td className={`${tdClass} text-ink-600`}>
+                        <td data-label="Predikat" className={`${tdClass} text-ink-600`}>
                           {PREDIKAT[s.predikat as keyof typeof PREDIKAT]?.label ?? s.predikat}
                         </td>
-                        <td className={tdClass}>
+                        <td data-label="Status" className={tdClass}>
                           <SetoranBadge status={s.status} />
                         </td>
-                        <td className={`${tdClass} text-ink-600`}>{s.penguji.name}</td>
+                        <td data-label="Penguji" className={`${tdClass} text-ink-600`}>{s.penguji.name}</td>
                         {user.role === "ADMIN" ? (
                           <td className={`${tdClass} text-right`}>
                             <form action={deleteSetoran} className="inline">

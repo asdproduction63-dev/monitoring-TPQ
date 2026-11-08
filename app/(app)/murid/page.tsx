@@ -169,7 +169,7 @@ export default async function MuridPage({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px]">
+            <table className="tabel-kartu w-full sm:min-w-[760px]">
               <thead>
                 <tr>
                   <th className={thClass}>Murid</th>
@@ -191,9 +191,9 @@ export default async function MuridPage({
                         </p>
                       </Link>
                     </td>
-                    <td className={tdClass}>{s.kelas}</td>
-                    <td className={`${tdClass} tnum text-right`}>{s._count.setoran}</td>
-                    <td className={tdClass}>
+                    <td data-label="Kelas" className={tdClass}>{s.kelas}</td>
+                    <td data-label="Setoran" className={`${tdClass} tnum text-right`}>{s._count.setoran}</td>
+                    <td data-label="Status" className={tdClass}>
                       {s.active ? <Badge tone="brand">Aktif</Badge> : <Badge>Nonaktif</Badge>}
                     </td>
                     <td className={`${tdClass} whitespace-nowrap text-right`}>

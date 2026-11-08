@@ -161,3 +161,92 @@
     object-fit: contain;
   }
 }
+
+/*
+ * Tabel jadi daftar kartu di layar ponsel.
+ *
+ * Tabel dengan enam atau tujuh kolom tidak muat di layar 360 px. Dibungkus
+ * overflow-x-auto saja, kolom sebelah kanan (predikat, status) tersembunyi
+ * di balik gulir yang tidak kelihatan. Di bawah 640 px tiap baris dijadikan
+ * satu kartu: nama kolomnya muncul di kiri tiap nilai lewat atribut
+ * data-label. Di layar lebar tabelnya tidak berubah sama sekali.
+ *
+ * Sel tanpa data-label (nama murid dan tombol aksi) tampil sebagai blok biasa:
+ * yang pertama jadi judul kartu, yang kedua jadi deretan tombol.
+ *
+ * Kepala tabel disembunyikan secara visual, bukan dibuang, supaya pembaca
+ * layar tetap mengenali kolomnya.
+ */
+@media (max-width: 639px) {
+  .tabel-kartu thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .tabel-kartu,
+  .tabel-kartu tbody,
+  .tabel-kartu tr {
+    display: block;
+  }
+
+  .tabel-kartu tr {
+    padding: 0.75rem 1rem;
+  }
+
+  .tabel-kartu td {
+    display: grid;
+    grid-template-columns: 6.75rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    align-items: start;
+    padding: 0.2rem 0 !important;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .tabel-kartu td > * {
+    grid-column: 2;
+    /* Lencana status jangan membentang selebar kolom. */
+    justify-self: start;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Di kartu ada ruang, jadi catatan tidak perlu dipotong jadi satu baris. */
+  .tabel-kartu td .truncate {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .tabel-kartu td::before {
+    content: attr(data-label);
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    padding-top: 0.2rem;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #736c5d;
+  }
+
+  .tabel-kartu td:not([data-label]) {
+    display: block;
+    padding: 0.1rem 0 !important;
+  }
+
+  .tabel-kartu td:not([data-label])::before {
+    content: none;
+  }
+
+  .tabel-kartu td:not([data-label]) > * {
+    grid-column: auto;
+  }
+}

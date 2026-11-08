@@ -154,7 +154,7 @@ export default async function DashboardPage({
         />
       </StatBand>
 
-      <div className="mt-6 grid gap-5 xl:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-3">
         <div className="space-y-5 xl:col-span-2">
           <section className={cardClass}>
             <div className={cardHeadClass}>
@@ -176,7 +176,7 @@ export default async function DashboardPage({
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px]">
+                <table className="tabel-kartu w-full sm:min-w-[560px]">
                   <thead>
                     <tr>
                       <th className={thClass}>Murid</th>
@@ -200,11 +200,11 @@ export default async function DashboardPage({
                             {JENIS_SETORAN[s.type as keyof typeof JENIS_SETORAN]?.short ?? s.type}
                           </p>
                         </td>
-                        <td className={tdClass}>{s.materi}</td>
-                        <td className={`${tdClass} whitespace-nowrap text-ink-600`}>
+                        <td data-label="Materi" className={tdClass}>{s.materi}</td>
+                        <td data-label="Tanggal" className={`${tdClass} whitespace-nowrap text-ink-600`}>
                           {formatTanggal(s.date)}
                         </td>
-                        <td className={tdClass}>
+                        <td data-label="Predikat" className={tdClass}>
                           <p className="text-[12px] text-ink-600">
                             {PREDIKAT[s.predikat as keyof typeof PREDIKAT]?.label ?? s.predikat}
                           </p>

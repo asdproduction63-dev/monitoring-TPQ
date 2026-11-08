@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -113,6 +114,19 @@ export function Sidebar({
   catatanBaru?: number;
 }) {
   const pathname = usePathname();
+  const jalur = useRef<HTMLElement>(null);
+
+  // Di layar kecil menu berupa jalur yang digeser ke samping, sehingga item
+  // aktif bisa berada di luar layar. Jalurnya digulir sendiri ke tengah — bukan
+  // lewat scrollIntoView, karena itu ikut menggulir seluruh halaman.
+  useEffect(() => {
+    const nav = jalur.current;
+    if (!nav || window.matchMedia("(min-width: 1024px)").matches) return;
+    const aktif = nav.querySelector<HTMLElement>("[aria-current=page]");
+    if (!aktif) return;
+    const kiri = aktif.getBoundingClientRect().left - nav.getBoundingClientRect().left + nav.scrollLeft;
+    nav.scrollTo({ left: kiri - (nav.clientWidth - aktif.offsetWidth) / 2 });
+  }, [pathname]);
 
   return (
     <aside className="bg-sidebar border-ink-200 lg:flex lg:min-h-screen lg:w-[232px] lg:shrink-0 lg:flex-col lg:border-r">
@@ -134,7 +148,7 @@ export function Sidebar({
         </div>
       </div>
 
-      <nav className="flex gap-1 overflow-x-auto px-2.5 py-2 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-3 lg:py-0">
+      <nav ref={jalur} className="flex gap-1 overflow-x-auto px-2.5 py-2 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-3 lg:py-0">
         {navGroups.map((group) => (
           <div key={group.label} className="contents lg:mt-6 lg:block lg:first:mt-0">
             <p className="hidden px-2 pb-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400 lg:block">

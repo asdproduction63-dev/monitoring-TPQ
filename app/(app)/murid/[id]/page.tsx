@@ -241,7 +241,7 @@ export default async function MuridDetailPage({
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px]">
+            <table className="tabel-kartu w-full sm:min-w-[860px]">
               <thead>
                 <tr>
                   <th className={thClass}>Tanggal</th>
@@ -254,23 +254,23 @@ export default async function MuridDetailPage({
               <tbody className="divide-y divide-ink-100">
                 {santri.setoran.map((s) => (
                   <tr key={s.id} className={rowClass}>
-                    <td className={`${tdClass} whitespace-nowrap text-ink-600`}>
+                    <td data-label="Tanggal" className={`${tdClass} whitespace-nowrap text-ink-600`}>
                       {formatTanggal(s.date)}
                     </td>
-                    <td className={tdClass}>
+                    <td data-label="Materi" className={tdClass}>
                       <p className="font-medium text-ink-800">{s.materi}</p>
                       <p className="mt-0.5 text-[12px] text-ink-500">
                         {JENIS_SETORAN[s.type as keyof typeof JENIS_SETORAN]?.short ?? s.type}
                         {s.catatan ? ` · ${s.catatan}` : ""}
                       </p>
                     </td>
-                    <td className={`${tdClass} text-ink-600`}>
+                    <td data-label="Predikat" className={`${tdClass} text-ink-600`}>
                       {PREDIKAT[s.predikat as keyof typeof PREDIKAT]?.label ?? s.predikat}
                     </td>
-                    <td className={tdClass}>
+                    <td data-label="Status" className={tdClass}>
                       <SetoranBadge status={s.status} />
                     </td>
-                    <td className={`${tdClass} text-ink-600`}>{s.penguji.name}</td>
+                    <td data-label="Penguji" className={`${tdClass} text-ink-600`}>{s.penguji.name}</td>
                   </tr>
                 ))}
               </tbody>
@@ -314,7 +314,7 @@ export default async function MuridDetailPage({
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px]">
+            <table className="tabel-kartu w-full sm:min-w-[640px]">
               <thead>
                 <tr>
                   <th className={thClass}>Tanggal</th>
@@ -326,14 +326,14 @@ export default async function MuridDetailPage({
               <tbody className="divide-y divide-ink-100">
                 {santri.presensi.map((p) => (
                   <tr key={p.id} className={rowClass}>
-                    <td className={`${tdClass} whitespace-nowrap text-ink-600`}>
+                    <td data-label="Tanggal" className={`${tdClass} whitespace-nowrap text-ink-600`}>
                       {formatTanggal(p.date)}
                     </td>
-                    <td className={tdClass}>{p.kegiatan.name}</td>
-                    <td className={tdClass}>
+                    <td data-label="Kegiatan" className={tdClass}>{p.kegiatan.name}</td>
+                    <td data-label="Status" className={tdClass}>
                       <PresensiBadge status={p.status} />
                     </td>
-                    <td className={`${tdClass} text-ink-500`}>{p.note || "—"}</td>
+                    <td data-label="Catatan" className={`${tdClass} text-ink-500`}>{p.note || "—"}</td>
                   </tr>
                 ))}
               </tbody>

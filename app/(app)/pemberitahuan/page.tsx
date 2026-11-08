@@ -167,7 +167,7 @@ export default async function PemberitahuanPage({
           <p className="px-5 py-14 text-center text-[13px] text-ink-500">Belum ada murid aktif.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px]">
+            <table className="tabel-kartu w-full sm:min-w-[900px]">
               <thead>
                 <tr>
                   <th className={thClass}>Murid</th>
@@ -191,7 +191,7 @@ export default async function PemberitahuanPage({
                       <p className="mt-0.5 text-[12px] text-ink-500">{b.santri.kelas}</p>
                     </td>
 
-                    <td className={tdClass}>
+                    <td data-label="No. HP wali" className={tdClass}>
                       {b.nomor ? (
                         <span className="font-mono text-[12.5px] text-ink-700">
                           {tampilNomor(b.santri.phone)}
@@ -206,7 +206,7 @@ export default async function PemberitahuanPage({
                       )}
                     </td>
 
-                    <td className={tdClass}>
+                    <td data-label="Akun wali" className={tdClass}>
                       {b.santri.wali ? (
                         b.santri.wali.active ? (
                           <Badge tone="mint">Aktif</Badge>
@@ -223,8 +223,8 @@ export default async function PemberitahuanPage({
                       )}
                     </td>
 
-                    <td className={`${tdClass} tnum text-right`}>{b.setoran}</td>
-                    <td className={`${tdClass} tnum text-right`}>
+                    <td data-label="Setoran" className={`${tdClass} tnum text-right`}>{b.setoran}</td>
+                    <td data-label="Hadir" className={`${tdClass} tnum text-right`}>
                       {b.presensi.total > 0 ? `${b.presensi.hadir}/${b.presensi.total}` : "—"}
                     </td>
 

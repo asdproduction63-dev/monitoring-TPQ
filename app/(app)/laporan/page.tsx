@@ -195,7 +195,7 @@ export default async function LaporanPage({
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[780px]">
+                <table className="tabel-kartu w-full sm:min-w-[780px]">
                   <thead>
                     <tr>
                       <th className={thClass}>Murid</th>
@@ -218,17 +218,17 @@ export default async function LaporanPage({
                           </Link>
                           <p className="mt-0.5 font-mono text-[11.5px] text-ink-500">{santri.nis}</p>
                         </td>
-                        <td className={tdClass}>{santri.kelas}</td>
-                        <td className={`${tdClass} tnum text-right font-medium text-ink-900`}>
+                        <td data-label="Kelas" className={tdClass}>{santri.kelas}</td>
+                        <td data-label="Setoran" className={`${tdClass} tnum text-right font-medium text-ink-900`}>
                           {agg?.total ?? 0}
                         </td>
-                        <td className={`${tdClass} tnum text-right text-brand-700`}>
+                        <td data-label="Lulus" className={`${tdClass} tnum text-right text-brand-700`}>
                           {agg?.lulus ?? 0}
                         </td>
-                        <td className={`${tdClass} tnum text-right text-brass-600`}>
+                        <td data-label="Diulang" className={`${tdClass} tnum text-right text-brass-600`}>
                           {agg?.ulang ?? 0}
                         </td>
-                        <td className={`${tdClass} whitespace-nowrap text-ink-600`}>
+                        <td data-label="Terakhir setor" className={`${tdClass} whitespace-nowrap text-ink-600`}>
                           {agg?.last ? formatTanggal(agg.last) : "—"}
                         </td>
                       </tr>
@@ -272,7 +272,7 @@ export default async function LaporanPage({
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[820px]">
+                <table className="tabel-kartu w-full sm:min-w-[820px]">
                   <thead>
                     <tr>
                       <th className={thClass}>Murid</th>
@@ -300,18 +300,18 @@ export default async function LaporanPage({
                             </Link>
                             <p className="mt-0.5 font-mono text-[11.5px] text-ink-500">{santri.nis}</p>
                           </td>
-                          <td className={tdClass}>{santri.kelas}</td>
-                          <td className={`${tdClass} tnum text-right text-mint-700`}>{hadir}</td>
-                          <td className={`${tdClass} tnum text-right text-brass-700`}>
+                          <td data-label="Kelas" className={tdClass}>{santri.kelas}</td>
+                          <td data-label="Hadir" className={`${tdClass} tnum text-right text-mint-700`}>{hadir}</td>
+                          <td data-label="Izin" className={`${tdClass} tnum text-right text-brass-700`}>
                             {agg?.IZIN ?? 0}
                           </td>
-                          <td className={`${tdClass} tnum text-right text-steel-700`}>
+                          <td data-label="Sakit" className={`${tdClass} tnum text-right text-steel-700`}>
                             {agg?.SAKIT ?? 0}
                           </td>
-                          <td className={`${tdClass} tnum text-right text-pink-700`}>
+                          <td data-label="Alpa" className={`${tdClass} tnum text-right text-pink-700`}>
                             {agg?.ALPA ?? 0}
                           </td>
-                          <td className={tdClass}>
+                          <td data-label="Kehadiran" className={tdClass}>
                             <div className="flex items-center gap-2.5">
                               <span className="tnum w-9 text-[12.5px] font-medium text-ink-700">
                                 {formatPersen(pct)}
