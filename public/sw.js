@@ -14,7 +14,7 @@
  * Naikkan VERSI setiap kali berkas ini diubah, supaya simpanan lama dibuang.
  */
 
-const VERSI = "tpq-v1";
+const VERSI = "tpq-v2";
 const SIMPANAN = `statis-${VERSI}`;
 const LURING = "/offline.html";
 
