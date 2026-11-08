@@ -6,6 +6,7 @@ import { tabBarClass, tabClass } from "@/lib/ui";
 
 const menu = [
   { href: "/raport", label: "Raport Pekanan" },
+  { href: "/raport/harian", label: "Perkembangan Harian" },
   { href: "/raport/rumah", label: "Laporan Rumah" },
 ];
 
