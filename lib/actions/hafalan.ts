@@ -64,10 +64,9 @@ export async function createSetoran(formData: FormData) {
 }
 
 export async function deleteSetoran(formData: FormData) {
-  const user = await requireStaff();
-  if (user.role !== "ADMIN") {
-    redirectWithError("/hafalan", "Hanya admin yang dapat menghapus setoran.");
-  }
+  // Admin dan ustadz sama-sama boleh menghapus setoran, termasuk yang dicatat
+  // ustadz lain. Wali murid ditolak oleh requireStaff.
+  await requireStaff();
 
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) {

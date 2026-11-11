@@ -342,7 +342,7 @@ export default async function HafalanPage({
                       <th className={thClass}>Predikat</th>
                       <th className={thClass}>Status</th>
                       <th className={thClass}>Penguji</th>
-                      {user.role === "ADMIN" ? <th className={`${thClass} text-right`}>Aksi</th> : null}
+                      <th className={`${thClass} text-right`}>Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-ink-100">
@@ -378,19 +378,17 @@ export default async function HafalanPage({
                           <SetoranBadge status={s.status} />
                         </td>
                         <td data-label="Penguji" className={`${tdClass} text-ink-600`}>{s.penguji.name}</td>
-                        {user.role === "ADMIN" ? (
-                          <td className={`${tdClass} text-right`}>
-                            <form action={deleteSetoran} className="inline">
-                              <input type="hidden" name="id" value={s.id} />
-                              <ConfirmSubmit
-                                className="text-[12.5px] font-medium text-clay-600 underline-offset-2 hover:text-clay-700 hover:underline"
-                                message="Hapus setoran ini? Tindakan ini tidak dapat dibatalkan."
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
-                          </td>
-                        ) : null}
+                        <td className={`${tdClass} text-right`}>
+                          <form action={deleteSetoran} className="inline">
+                            <input type="hidden" name="id" value={s.id} />
+                            <ConfirmSubmit
+                              className="text-[12.5px] font-medium text-clay-600 underline-offset-2 hover:text-clay-700 hover:underline"
+                              message="Hapus setoran ini? Tindakan ini tidak dapat dibatalkan."
+                            >
+                              Hapus
+                            </ConfirmSubmit>
+                          </form>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
